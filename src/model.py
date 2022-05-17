@@ -16,6 +16,15 @@ def conv_bn(filters,
     return conv
 
 
+def get_callbacks(name):
+    return [
+        tf.keras.callbacks.ModelCheckpoint(f'models/{name}.h5',
+                                           save_best_only=True,
+                                           save_weights_only=True,
+                                           verbose=1)
+    ]
+
+
 # building the segnet model
 def segnet():
     inputs = tf.keras.layers.Input((188, 188, 3))
@@ -74,8 +83,8 @@ def segnet():
     unpool5 = tfa.layers.MaxUnpooling2D()(decoder4, mask1)
     decoder5 = conv_bn(filters, unpool5)
 
-    out_mask = tf.keras.layers.Conv2D(1, (1, 1), activation='sigmoid', name='mask')(decoder5)
-    out_edge = tf.keras.layers.Conv2D(1, (1, 1), activation='sigmoid', name='edge')(decoder5)
+    out_mask = tf.keras.layers.Conv2D(1, (1, 1), activation='softmax', name='mask')(decoder5)
+    out_edge = tf.keras.layers.Conv2D(1, (1, 1), activation='softmax', name='edge')(decoder5)
 
     model = tf.keras.models.Model(inputs=inputs, outputs=(out_mask, out_edge))
 
