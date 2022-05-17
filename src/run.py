@@ -52,15 +52,6 @@ def train(model_name='binary_crossentropy'):
     # initializing the segnet model
     model = segnet()
 
-    # selecting custom adam optimizer
-    optimizer = tf.optimizers.Adam(learning_rate=0.0001)
-    model.compile(
-        loss='binary_crossentropy',
-        loss_weights=[0.1, 0.9],
-        optimizer=optimizer,
-        metrics='accuracy'
-    )
-
     # fitting the model
     model.fit(
         train_dataset.batch(8),

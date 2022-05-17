@@ -88,4 +88,13 @@ def segnet():
 
     model = tf.keras.models.Model(inputs=inputs, outputs=(out_mask, out_edge))
 
+    # selecting custom adam optimizer
+    optimizer = tf.optimizers.Adam(learning_rate=0.0001)
+    model.compile(
+        loss='binary_crossentropy',
+        loss_weights=[0.1, 0.9],
+        optimizer=optimizer,
+        metrics='accuracy'
+    )
+
     return model
