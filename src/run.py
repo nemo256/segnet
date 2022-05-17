@@ -1,10 +1,7 @@
-import glob
-import os
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
+import model
 
 
 # main program
 if __name__ == '__main__':
-    print('Hello SegNet!')
+    model = segnet()
+    model.summary()
