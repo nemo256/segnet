@@ -68,7 +68,7 @@ def train(model_name='binary_crossentropy'):
 
 # extract number of image chips for an image
 def get_sizes(img,
-              offset=128,
+              offset=164,
               input=128,
               output=128):
     return [(len(np.arange(offset, img[0].shape[0] - input / 2, output)), len(np.arange(offset, img[0].shape[1] - input / 2, output)))]
@@ -237,10 +237,10 @@ def count_circles(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    train('binary_crossentropy_128')
+    # train('binary_crossentropy_128')
     # evaluate(model_name='binary_crossentropy')
-    # predict(model_name='binary_crossentropy', img='Im037_0.jpg')
-    # threshold(img='mask.png')
-    # threshold(img='edge.png')
-    # threshold(img='edge-mask.png')
-    # count_circles(img='edge.png')
+    predict(model_name='binary_crossentropy_128', img='Im037_0.jpg')
+    threshold(img='mask.png')
+    threshold(img='edge.png')
+    threshold(img='edge-mask.png')
+    count_circles(img='edge.png')
