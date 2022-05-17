@@ -52,8 +52,6 @@ def train(model_name='binary_crossentropy'):
     # initializing the segnet model
     model = segnet()
 
-    # model.summary()
-
     # fitting the model
     model.fit(
         train_dataset.batch(8),
