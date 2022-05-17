@@ -54,24 +54,24 @@ def segnet():
     decoder1 = conv_bn(filters, decoder1)
     decoder1 = conv_bn(filters, decoder1)
 
-    unpool2 = tfa.layers.MaxUnPooling2D()(decoder1, mask4)
+    unpool2 = tfa.layers.MaxUnpooling2D()(decoder1, mask4)
     decoder2 = conv_bn(filters, unpool2)
     decoder2 = conv_bn(filters, decoder2)
     decoder2 = conv_bn(filters/2, decoder2)
 
     filters /= 2
-    unpool3 = tfa.layers.MaxUnPooling2D()(decoder2, mask3)
+    unpool3 = tfa.layers.MaxUnpooling2D()(decoder2, mask3)
     decoder3 = conv_bn(filters, unpool3)
     decoder3 = conv_bn(filters, decoder3)
     decoder3 = conv_bn(filters/2, decoder3)
 
     filters /= 2
-    unpool4 = tfa.layers.MaxUnPooling2D()(decoder3, mask2)
+    unpool4 = tfa.layers.MaxUnpooling2D()(decoder3, mask2)
     decoder4 = conv_bn(filters, unpool4)
     decoder4 = conv_bn(filters/2, decoder4)
 
     filters /= 2
-    unpool5 = tfa.layers.MaxUnPooling2D()(decoder4, mask1)
+    unpool5 = tfa.layers.MaxUnpooling2D()(decoder4, mask1)
     decoder5 = conv_bn(filters, unpool5)
 
     out_mask = tf.keras.layers.Conv2D(1, (1, 1), activation='sigmoid', name='mask')(decoder5)

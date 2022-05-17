@@ -1,4 +1,4 @@
-# segnet
+# SegNet
 Implementation of SegNet AI model for future studies
 
 ![sample](sample.png)
