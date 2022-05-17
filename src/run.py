@@ -164,7 +164,7 @@ def evaluate(model_name='binary_crossentropy'):
     train_img_files = glob.glob('data/train/*.jpg')
     test_img_files = glob.glob('data/test/*.jpg')
 
-    model = model.segnet()
+    model = segnet()
 
     # check for existing weights
     if not os.path.exists(f'models/{model_name}.h5'):
@@ -229,8 +229,8 @@ def count_circles(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    train('binary_crossentropy')
-    # evaluate(model_name='binary_crossentropy')
+    # train('binary_crossentropy')
+    evaluate(model_name='binary_crossentropy')
     # predict(model_name='binary_crossentropy', img='Im037_0.jpg')
     # threshold(img='mask.png')
     # threshold(img='edge.png')
