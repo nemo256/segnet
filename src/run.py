@@ -56,7 +56,7 @@ def train(model_name='binary_crossentropy'):
     model.fit(
         train_dataset.batch(8),
         validation_data=test_dataset.batch(8),
-        epochs=600,
+        epochs=800,
         steps_per_epoch=125,
         max_queue_size=16,
         use_multiprocessing=False,
