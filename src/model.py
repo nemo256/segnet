@@ -27,7 +27,7 @@ def get_callbacks(name):
 
 # building the segnet model
 def segnet():
-    inputs = tf.keras.layers.Input((224, 224, 3))
+    inputs = tf.keras.layers.Input((128, 128, 3))
 
     # encoder
     filters = 64
