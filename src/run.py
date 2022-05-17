@@ -61,13 +61,11 @@ def train(model_name='binary_crossentropy'):
         metrics='accuracy'
     )
 
-    # model.summary()
-
     # fitting the model
     model.fit(
         train_dataset.batch(8),
         validation_data=test_dataset.batch(8),
-        epochs=1,
+        epochs=600,
         steps_per_epoch=125,
         max_queue_size=16,
         use_multiprocessing=False,
@@ -80,8 +78,8 @@ def train(model_name='binary_crossentropy'):
 # extract number of image chips for an image
 def get_sizes(img,
               offset=150,
-              input=188,
-              output=100):
+              input=64,
+              output=64):
     return [(len(np.arange(offset, img[0].shape[0] - input / 2, output)), len(np.arange(offset, img[0].shape[1] - input / 2, output)))]
 
 
@@ -91,9 +89,9 @@ def reshape(img,
             size_y,
             type='input'):
     if type == 'input':
-        return img.reshape(size_x, size_y, 188, 188, 1)
+        return img.reshape(size_x, size_y, 64, 64, 1)
     elif type == 'output':
-        return img.reshape(size_x, size_y, 100, 100, 1)
+        return img.reshape(size_x, size_y, 64, 64, 1)
     else:
         print(f'Invalid type: {type} (input, output)')
 
