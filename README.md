@@ -1,4 +1,4 @@
-# do-u-net
+# segnet
 Implementation of SegNet AI model for future studies
 
 ![sample](sample.png)
