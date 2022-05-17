@@ -11,30 +11,30 @@ from model import segnet, get_callbacks
 
 
 def generate_train_dataset(img_files):
-    imgs, mask, edge = data.load_data(img_files)
+    img, mask, edge = data.load_data(img_files)
 
     def train_gen():
-        return data.train_generator(imgs, mask,
+        return data.train_generator(img, mask,
                                     edge=edge,
                                     padding=100,
-                                    input_size=64,
-                                    output_size=64)
+                                    input_size=224,
+                                    output_size=224)
 
     return tf.data.Dataset.from_generator(
         train_gen,
         (tf.float64, ((tf.float64), (tf.float64))),
-        ((64, 64, 3), ((64, 64, 1), (64, 64, 1)))
+        ((224, 224, 3), ((224, 224, 1), (224, 224, 1)))
     )
 
 
 def generate_test_dataset(img_files):
-    imgs, mask, edge = data.load_data(img_files)
+    img, mask, edge = data.load_data(img_files)
 
-    img_chips, mask_chips, edge_chips = data.test_chips(imgs, mask,
+    img_chips, mask_chips, edge_chips = data.test_chips(img, mask,
                                                         edge=edge,
                                                         padding=100,
-                                                        input_size=64,
-                                                        output_size=64)
+                                                        input_size=224,
+                                                        output_size=224)
 
     return tf.data.Dataset.from_tensor_slices(
         (img_chips, (mask_chips, edge_chips))
@@ -52,6 +52,8 @@ def train(model_name='binary_crossentropy'):
     # initializing the segnet model
     model = segnet()
 
+    # model.summary()
+
     # fitting the model
     model.fit(
         train_dataset.batch(8),
@@ -68,9 +70,9 @@ def train(model_name='binary_crossentropy'):
 
 # extract number of image chips for an image
 def get_sizes(img,
-              offset=150,
-              input=64,
-              output=64):
+              offset=82,
+              input=224,
+              output=224):
     return [(len(np.arange(offset, img[0].shape[0] - input / 2, output)), len(np.arange(offset, img[0].shape[1] - input / 2, output)))]
 
 
@@ -80,9 +82,9 @@ def reshape(img,
             size_y,
             type='input'):
     if type == 'input':
-        return img.reshape(size_x, size_y, 64, 64, 1)
+        return img.reshape(size_x, size_y, 224, 224, 1)
     elif type == 'output':
-        return img.reshape(size_x, size_y, 64, 64, 1)
+        return img.reshape(size_x, size_y, 224, 224, 1)
     else:
         print(f'Invalid type: {type} (input, output)')
 
@@ -96,7 +98,9 @@ def concat(imgs):
 def predict(img='Im037_0.jpg',
             model_name='binary_crossentropy'):
     image = glob.glob(f'data/test/{img}')
-    model = model.segnet()
+
+    # initialize segnet
+    model = segnet()
 
     # Check for existing weights
     if not os.path.exists(f'models/{model_name}.h5'):
@@ -105,9 +109,16 @@ def predict(img='Im037_0.jpg',
     # load best weights
     model.load_weights(f'models/{model_name}.h5')
 
-    # load data
+    # load test data
     img, mask, edge = data.load_data(image, padding=200)
-    img_chips, mask_chips, edge_chips = data.test_chips(img, mask, edge=edge, padding=100)
+    img_chips, mask_chips, edge_chips = data.test_chips(
+        img,
+        mask,
+        edge=edge,
+        padding=100,
+        input_size=224,
+        output_size=224
+    )
 
     # segment all image chips
     output = model.predict(img_chips)
@@ -155,6 +166,7 @@ def evaluate(model_name='binary_crossentropy'):
     train_img_files = glob.glob('data/train/*.jpg')
     test_img_files = glob.glob('data/test/*.jpg')
 
+    # initialize segnet
     model = segnet()
 
     # check for existing weights
@@ -164,9 +176,16 @@ def evaluate(model_name='binary_crossentropy'):
     # load best weights
     model.load_weights(f'models/{model_name}.h5')
 
-    # load data
-    img, mask, edge = data.load_data(test_img_files)
-    img_chips, mask_chips, edge_chips = data.test_chips(img, mask, edge=edge)
+    # load test data
+    imgs, mask, edge = data.load_data(test_img_files)
+    img_chips, mask_chips, edge_chips = data.test_chips(
+        imgs,
+        mask,
+        edge=edge,
+        padding=100,
+        input_size=224,
+        output_size=224
+    )
 
     # print the evaluated accuracies
     print(model.evaluate(img_chips, (mask_chips, edge_chips)))
@@ -220,8 +239,8 @@ def count_circles(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('binary_crossentropy')
-    evaluate(model_name='binary_crossentropy')
+    train('binary_crossentropy')
+    # evaluate(model_name='binary_crossentropy')
     # predict(model_name='binary_crossentropy', img='Im037_0.jpg')
     # threshold(img='mask.png')
     # threshold(img='edge.png')
