@@ -208,15 +208,16 @@ def threshold(img='edge.png'):
 
 
 # count how many cells from the predicted edges
-def count_circles(img='edge.png'):
+def hough_transform(img='edge.png'):
     if not os.path.exists(f'output/{img}'):
         print('Image does not exist!')
         return
 
-    img = cv2.imread(f'output/{img}')
-
-    # convert to grayscale and apply Circle Hough Transform (CHT)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # getting the input image in grayscale mode
+    image = cv2.imread(f'output/{img}')
+    # convert to grayscale
+    img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # apply hough circles
     circles = cv2.HoughCircles(img, cv2.HOUGH_GRADIENT, 1, minDist=33, maxRadius=55, minRadius=28, param1=30, param2=20)
     output = img.copy()
 
@@ -231,18 +232,56 @@ def count_circles(img='edge.png'):
             cv2.circle(output, (x, y), r, (0, 255, 0), 4)
             cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
         # save the output image
-        plt.imsave('output/count_circles.png', np.hstack([img, output]))
+        plt.imsave('output/hough_transform.png', np.hstack([img, output]))
 
+    # show the hough_transform results
+    print('Hough transform:')
     print(f'Real count: {len(data.make_polygon_lists(["data/test/Im037_0.json"])[0])}')
     print(f'Predicted count: {len(circles)}')
 
 
+# count how many cells from the predicted edges
+def component_labeling(img='edge.png'):
+    if not os.path.exists(f'output/{img}'):
+        print('Image does not exist!')
+        return
+
+    # getting the input image
+    image = cv2.imread(f'output/{img}')
+    # convert to grayscale
+    img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # converting those pixels with values 1-127 to 0 and others to 1
+    img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY)[1]
+    # applying cv2.connectedComponents() 
+    num_labels, labels = cv2.connectedComponents(img)
+    
+    # map component labels to hue val, 0-179 is the hue range in OpenCV
+    label_hue = np.uint8(179*labels/np.max(labels))
+    blank_ch = 255*np.ones_like(label_hue)
+    output = cv2.merge([label_hue, blank_ch, blank_ch])
+
+    # converting cvt to BGR
+    output = cv2.cvtColor(output, cv2.COLOR_HSV2BGR)
+
+    # set bg label to black
+    output[label_hue==0] = 0
+    
+    # saving image after Component Labeling
+    plt.imsave('output/component_labeling.png', np.hstack([image, output]))
+
+    # show number of labels detected
+    print('Connected component labeling:')
+    print(f'Real count: {len(data.make_polygon_lists(["data/test/Im037_0.json"])[0])}')
+    print(f'Predicted count: {num_labels}')
+
+
 # main program
 if __name__ == '__main__':
-    train('binary_crossentropy_128')
+    # train('binary_crossentropy_128')
     # evaluate(model_name='binary_crossentropy_128')
-    # predict(model_name='binary_crossentropy_128', img='Im037_0.jpg')
-    # threshold(img='mask.png')
-    # threshold(img='edge.png')
-    # threshold(img='edge-mask.png')
-    # count_circles(img='edge.png')
+    predict(model_name='binary_crossentropy_128', img='Im037_0.jpg')
+    threshold(img='mask.png')
+    threshold(img='edge.png')
+    threshold(img='edge-mask.png')
+    hough_transform(img='edge.png')
+    component_labeling(img='edge-mask.png')
