@@ -52,11 +52,13 @@ def train(model_name='binary_crossentropy'):
     # initializing the segnet model
     model = segnet()
 
+    model.load_weights(f'models/{model_name}.h5')
+
     # fitting the model
     model.fit(
         train_dataset.batch(8),
         validation_data=test_dataset.batch(8),
-        epochs=800,
+        epochs=267,
         steps_per_epoch=125,
         max_queue_size=16,
         use_multiprocessing=False,
@@ -237,10 +239,10 @@ def count_circles(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('binary_crossentropy_128')
-    evaluate(model_name='binary_crossentropy')
-    predict(model_name='binary_crossentropy_128', img='Im037_0.jpg')
-    threshold(img='mask.png')
-    threshold(img='edge.png')
-    threshold(img='edge-mask.png')
-    count_circles(img='edge.png')
+    train('binary_crossentropy_128')
+    # evaluate(model_name='binary_crossentropy_128')
+    # predict(model_name='binary_crossentropy_128', img='Im037_0.jpg')
+    # threshold(img='mask.png')
+    # threshold(img='edge.png')
+    # threshold(img='edge-mask.png')
+    # count_circles(img='edge.png')
