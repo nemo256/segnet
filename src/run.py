@@ -340,12 +340,12 @@ def distance_transform(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('mse')
+    train('mse_unsupervised')
     # evaluate(model_name='mse')
     # predict(model_name='mse')
-    threshold(img='mask.png')
-    threshold(img='edge.png')
-    threshold(img='edge_mask.png')
-    distance_transform(img='threshold_edge_mask.png')
-    hough_transform(img='edge.png')
-    component_labeling(img='edge_mask.png')
+    # threshold(img='mask.png')
+    # threshold(img='edge.png')
+    # threshold(img='edge_mask.png')
+    # distance_transform(img='threshold_edge_mask.png')
+    # hough_transform(img='edge.png')
+    # component_labeling(img='edge_mask.png')
