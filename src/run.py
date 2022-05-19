@@ -11,8 +11,8 @@ from model import segnet, get_callbacks
 
 
 # global variables
-input_shape     = (32, 32, 3)
-output_shape    = (32, 32, 1)
+input_shape     = (128, 128, 3)
+output_shape    = (128, 128, 1)
 padding         = [200, 100]
 
 
@@ -308,11 +308,11 @@ def component_labeling(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    train('mse_32')
+    # train('mse')
     # evaluate(model_name='mse')
-    # predict(model_name='mse_32', img='Im037_0.jpg')
-    # threshold(img='mask.png')
-    # threshold(img='edge.png')
-    # threshold(img='edge-mask.png')
-    # hough_transform(img='edge.png')
-    # component_labeling(img='edge-mask.png')
+    predict(model_name='mse', img='Im037_0.jpg')
+    threshold(img='mask.png')
+    threshold(img='edge.png')
+    threshold(img='edge-mask.png')
+    hough_transform(img='edge.png')
+    component_labeling(img='edge-mask.png')
