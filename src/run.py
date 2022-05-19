@@ -10,31 +10,40 @@ import data
 from model import segnet, get_callbacks
 
 
+# global variables
+input_shape     = (32, 32, 3)
+output_shape    = (32, 32, 1)
+padding         = [200, 100]
+
+
 def generate_train_dataset(img_files):
     img, mask, edge = data.load_data(img_files)
 
     def train_gen():
         return data.train_generator(img, mask,
                                     edge=edge,
-                                    padding=200,
-                                    input_size=256,
-                                    output_size=256)
+                                    padding=padding[0],
+                                    input_size=input_shape[0],
+                                    output_size=output_shape[0])
 
     return tf.data.Dataset.from_generator(
         train_gen,
         (tf.float64, ((tf.float64), (tf.float64))),
-        ((256, 256, 3), ((256, 256, 1), (256, 256, 1)))
+        (input_shape, (output_shape, output_shape))
     )
 
 
 def generate_test_dataset(img_files):
     img, mask, edge = data.load_data(img_files)
 
-    img_chips, mask_chips, edge_chips = data.test_chips(img, mask,
-                                                        edge=edge,
-                                                        padding=100,
-                                                        input_size=256,
-                                                        output_size=256)
+    img_chips, mask_chips, edge_chips = data.test_chips(
+        img,
+        mask,
+        edge=edge,
+        padding=padding[1],
+        input_size=input_shape[0],
+        output_size=output_shape[0]
+    )
 
     return tf.data.Dataset.from_tensor_slices(
         (img_chips, (mask_chips, edge_chips))
@@ -73,9 +82,9 @@ def train(model_name='mse'):
 
 # extract number of image chips for an image
 def get_sizes(img,
-              padding=100,
-              input=256,
-              output=256):
+              padding=padding[1],
+              input=input_shape[0],
+              output=output_shape[0]):
     offset = padding + (output / 2)
     return [(len(np.arange(offset, img[0].shape[0] - input / 2, output)), len(np.arange(offset, img[0].shape[1] - input / 2, output)))]
 
@@ -84,7 +93,7 @@ def get_sizes(img,
 def reshape(img,
             size_x,
             size_y):
-    return img.reshape(size_x, size_y, 256, 256, 1)
+    return img.reshape(size_x, size_y, output_shape[0], output_shape[0], 1)
 
 
 # concatenate images
@@ -121,9 +130,9 @@ def predict(img='Im037_0.jpg',
         img,
         mask,
         edge=edge,
-        padding=100,
-        input_size=256,
-        output_size=256
+        padding=padding[1],
+        input_size=input_shape[0],
+        output_size=output_shape[0]
     )
 
     # segment all image chips
@@ -204,9 +213,9 @@ def evaluate(model_name='mse'):
         imgs,
         mask,
         edge=edge,
-        padding=100,
-        input_size=256,
-        output_size=256
+        padding=padding[1],
+        input_size=input_shape[0],
+        output_size=output_shape[0]
     )
 
     # print the evaluated accuracies
@@ -299,9 +308,9 @@ def component_labeling(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    train('mse_256')
+    train('mse_32')
     # evaluate(model_name='mse')
-    # predict(model_name='mse', img='Im037_0.jpg')
+    # predict(model_name='mse_32', img='Im037_0.jpg')
     # threshold(img='mask.png')
     # threshold(img='edge.png')
     # threshold(img='edge-mask.png')
