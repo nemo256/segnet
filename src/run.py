@@ -80,6 +80,10 @@ def train(model_name='mse'):
     np.save(f'models/{model_name}_history.npy', history.history)
 
 
+def normalize(img):
+    return np.array((img - np.min(img)) / (np.max(img) - np.min(img)))
+
+
 # extract number of image chips for an image
 def get_sizes(img,
               padding=padding[1],
@@ -157,17 +161,17 @@ def predict(img='Im037_0.jpg',
     # save predicted mask and edge
     plt.imsave('output/mask.png', new_mask, cmap='gray')
     plt.imsave('output/edge.png', new_edge, cmap='gray')
-    plt.imsave('output/edge-mask.png', new_mask - new_edge, cmap='gray')
+    plt.imsave('output/edge_mask.png', new_mask - new_edge, cmap='gray')
 
     # denoise all the output images
     new_mask = denoise('output/mask.png')
     new_edge = denoise('output/edge.png')
-    edge_mask = denoise('output/edge-mask.png')
+    edge_mask = denoise('output/edge_mask.png')
 
     # save predicted mask and edge after denoising
     plt.imsave('output/mask.png', new_mask, cmap='gray')
     plt.imsave('output/edge.png', new_edge, cmap='gray')
-    plt.imsave('output/edge-mask.png', edge_mask, cmap='gray')
+    plt.imsave('output/edge_mask.png', edge_mask, cmap='gray')
 
     # organize results into one figure
     fig = plt.figure(figsize=(25, 12), dpi=80)
@@ -322,25 +326,26 @@ def distance_transform(img='edge.png'):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # transorm rgb channels
-    b = cv2.distanceTransform(img, distanceType=cv2.DIST_L2, maskSize=5)
-    g = cv2.distanceTransform(img, distanceType=cv2.DIST_L1, maskSize=5)
-    r = cv2.distanceTransform(img, distanceType=cv2.DIST_C, maskSize=5)
+    b = cv2.distanceTransform(img, distanceType=cv2.DIST_L2, maskSize=0)
+    g = cv2.distanceTransform(img, distanceType=cv2.DIST_L1, maskSize=0)
+    r = cv2.distanceTransform(img, distanceType=cv2.DIST_C, maskSize=0)
     
     # merge the transformed channels back to an image
     img = cv2.merge((b, g, r))
+    img = normalize(img)
 
     # saving image after Component Labeling
-    # plt.imsave('output/distance_transform.png', img, cmap='gray')
+    plt.imsave('output/distance_transform.png', img)
 
 
 # main program
 if __name__ == '__main__':
     # train('mse')
-    # evaluate(model_name='mse')
+    evaluate(model_name='mse')
     predict(model_name='mse')
     threshold(img='mask.png')
     threshold(img='edge.png')
-    threshold(img='edge-mask.png')
-    distance_transform(img='edge.png')
+    threshold(img='edge_mask.png')
+    distance_transform(img='threshold_edge_mask.png')
     hough_transform(img='edge.png')
-    component_labeling(img='edge-mask.png')
+    component_labeling(img='distance_transform.png')
