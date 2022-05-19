@@ -155,9 +155,9 @@ def predict(img='Im037_0.jpg',
     new_edge = concat(new_edge_chips)
 
     # save predicted mask and edge
-    plt.imsave('output/mask.png', new_mask)
-    plt.imsave('output/edge.png', new_edge)
-    plt.imsave('output/edge-mask.png', new_mask - new_edge)
+    plt.imsave('output/mask.png', new_mask, cmap='gray')
+    plt.imsave('output/edge.png', new_edge, cmap='gray')
+    plt.imsave('output/edge-mask.png', new_mask - new_edge, cmap='gray')
 
     # denoise all the output images
     new_mask = denoise('output/mask.png')
@@ -165,9 +165,9 @@ def predict(img='Im037_0.jpg',
     edge_mask = denoise('output/edge-mask.png')
 
     # save predicted mask and edge after denoising
-    plt.imsave('output/mask.png', new_mask)
-    plt.imsave('output/edge.png', new_edge)
-    plt.imsave('output/edge-mask.png', edge_mask)
+    plt.imsave('output/mask.png', new_mask, cmap='gray')
+    plt.imsave('output/edge.png', new_edge, cmap='gray')
+    plt.imsave('output/edge-mask.png', edge_mask, cmap='gray')
 
     # organize results into one figure
     fig = plt.figure(figsize=(25, 12), dpi=80)
@@ -235,7 +235,7 @@ def threshold(img='edge.png'):
     otsu_threshold, image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU,)
 
     # save the resulting thresholded image
-    plt.imsave(f'output/threshold_{img}', image)
+    plt.imsave(f'output/threshold_{img}', image, cmap='gray')
 
 
 # count how many cells from the predicted edges
@@ -263,7 +263,8 @@ def hough_transform(img='edge.png'):
             cv2.circle(output, (x, y), r, (0, 255, 0), 4)
             cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
         # save the output image
-        plt.imsave('output/hough_transform.png', np.hstack([img, output]))
+        plt.imsave('output/hough_transform.png',
+                   np.hstack([img, output]))
 
     # show the hough_transform results
     print('Hough transform:')
@@ -298,7 +299,8 @@ def component_labeling(img='edge.png'):
     output[label_hue==0] = 0
     
     # saving image after Component Labeling
-    plt.imsave('output/component_labeling.png', np.hstack([image, output]))
+    plt.imsave('output/component_labeling.png',
+               np.hstack([image, output]))
 
     # show number of labels detected
     print('Connected component labeling:')
@@ -306,13 +308,39 @@ def component_labeling(img='edge.png'):
     print(f'Predicted count: {num_labels}')
 
 
+# get a minimal of each cell to help with the counting
+def distance_transform(img='edge.png'):
+    if not os.path.exists(f'output/{img}'):
+        print('Image does not exist!')
+        return
+
+    # getting the input image
+    image = cv2.imread(f'output/{img}')
+    # convert to numpy array
+    img = np.asarray(image)
+    # convert to grayscale
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # transorm rgb channels
+    b = cv2.distanceTransform(img, distanceType=cv2.DIST_L2, maskSize=5)
+    g = cv2.distanceTransform(img, distanceType=cv2.DIST_L1, maskSize=5)
+    r = cv2.distanceTransform(img, distanceType=cv2.DIST_C, maskSize=5)
+    
+    # merge the transformed channels back to an image
+    img = cv2.merge((b, g, r))
+
+    # saving image after Component Labeling
+    # plt.imsave('output/distance_transform.png', img, cmap='gray')
+
+
 # main program
 if __name__ == '__main__':
     # train('mse')
     # evaluate(model_name='mse')
-    predict(model_name='mse', img='Im037_0.jpg')
+    predict(model_name='mse')
     threshold(img='mask.png')
     threshold(img='edge.png')
     threshold(img='edge-mask.png')
+    distance_transform(img='edge.png')
     hough_transform(img='edge.png')
     component_labeling(img='edge-mask.png')
