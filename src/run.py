@@ -17,13 +17,13 @@ def generate_train_dataset(img_files):
         return data.train_generator(img, mask,
                                     edge=edge,
                                     padding=200,
-                                    input_size=128,
-                                    output_size=128)
+                                    input_size=256,
+                                    output_size=256)
 
     return tf.data.Dataset.from_generator(
         train_gen,
         (tf.float64, ((tf.float64), (tf.float64))),
-        ((128, 128, 3), ((128, 128, 1), (128, 128, 1)))
+        ((256, 256, 3), ((256, 256, 1), (256, 256, 1)))
     )
 
 
@@ -33,15 +33,15 @@ def generate_test_dataset(img_files):
     img_chips, mask_chips, edge_chips = data.test_chips(img, mask,
                                                         edge=edge,
                                                         padding=100,
-                                                        input_size=128,
-                                                        output_size=128)
+                                                        input_size=256,
+                                                        output_size=256)
 
     return tf.data.Dataset.from_tensor_slices(
         (img_chips, (mask_chips, edge_chips))
     )
 
 
-def train(model_name='binary_crossentropy'):
+def train(model_name='mse'):
     train_img_files = glob.glob('data/train/*.jpg')
     test_img_files = glob.glob('data/test/*.jpg')
 
@@ -74,8 +74,8 @@ def train(model_name='binary_crossentropy'):
 # extract number of image chips for an image
 def get_sizes(img,
               padding=100,
-              input=128,
-              output=128):
+              input=256,
+              output=256):
     offset = padding + (output / 2)
     return [(len(np.arange(offset, img[0].shape[0] - input / 2, output)), len(np.arange(offset, img[0].shape[1] - input / 2, output)))]
 
@@ -84,7 +84,7 @@ def get_sizes(img,
 def reshape(img,
             size_x,
             size_y):
-    return img.reshape(size_x, size_y, 128, 128, 1)
+    return img.reshape(size_x, size_y, 256, 256, 1)
 
 
 # concatenate images
@@ -102,7 +102,7 @@ def denoise(img):
 
 # predict (segment) image and save a sample output
 def predict(img='Im037_0.jpg',
-            model_name='binary_crossentropy'):
+            model_name='mse'):
     image = glob.glob(f'data/test/{img}')
 
     # initialize segnet
@@ -122,8 +122,8 @@ def predict(img='Im037_0.jpg',
         mask,
         edge=edge,
         padding=100,
-        input_size=128,
-        output_size=128
+        input_size=256,
+        output_size=256
     )
 
     # segment all image chips
@@ -184,7 +184,7 @@ def predict(img='Im037_0.jpg',
 
 
 # evaluate model accuracies (mask accuracy and edge accuracy)
-def evaluate(model_name='binary_crossentropy'):
+def evaluate(model_name='mse'):
     train_img_files = glob.glob('data/train/*.jpg')
     test_img_files = glob.glob('data/test/*.jpg')
 
@@ -205,8 +205,8 @@ def evaluate(model_name='binary_crossentropy'):
         mask,
         edge=edge,
         padding=100,
-        input_size=128,
-        output_size=128
+        input_size=256,
+        output_size=256
     )
 
     # print the evaluated accuracies
@@ -299,9 +299,9 @@ def component_labeling(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('mse')
-    evaluate(model_name='mse')
-    # predict(model_name='binary_crossentropy', img='Im037_0.jpg')
+    train('test')
+    # evaluate(model_name='mse')
+    # predict(model_name='mse', img='Im037_0.jpg')
     # threshold(img='mask.png')
     # threshold(img='edge.png')
     # threshold(img='edge-mask.png')
