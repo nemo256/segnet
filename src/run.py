@@ -97,7 +97,6 @@ def denoise(img):
     return cv2.fastNlMeansDenoising(img, 23, 23, 7, 21)
 
 
-
 # predict (segment) image and save a sample output
 def predict(img='Im037_0.jpg',
             model_name='binary_crossentropy'):
@@ -145,6 +144,7 @@ def predict(img='Im037_0.jpg',
     plt.imsave('output/edge.png', new_edge)
     plt.imsave('output/edge-mask.png', new_mask - new_edge)
 
+    # denoise all the output images
     new_mask = denoise('output/mask.png')
     new_edge = denoise('output/edge.png')
     edge_mask = denoise('output/edge-mask.png')
