@@ -299,8 +299,8 @@ def component_labeling(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    train('mse')
-    # evaluate(model_name='binary_crossentropy')
+    # train('mse')
+    evaluate(model_name='mse')
     # predict(model_name='binary_crossentropy', img='Im037_0.jpg')
     # threshold(img='mask.png')
     # threshold(img='edge.png')
