@@ -91,7 +91,7 @@ def segnet():
     # selecting custom adam optimizer
     optimizer = tf.optimizers.Adam(learning_rate=0.0001)
     model.compile(
-        loss='binary_crossentropy',
+        loss='mse',
         loss_weights=[0.3, 0.7],
         optimizer=optimizer,
         metrics='accuracy'
