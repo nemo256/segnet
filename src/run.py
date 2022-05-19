@@ -128,9 +128,12 @@ def predict(img='Im037_0.jpg',
     new_mask_chips = np.array(output[0])
     new_edge_chips = np.array(output[1])
 
+    # get image dimensions
+    dimensions = [get_sizes(img)[0][0], get_sizes(img)[0][1]]
+
     # reshape chips arrays to be concatenated
-    new_mask_chips = reshape(new_mask_chips, get_sizes(img)[0][0], get_sizes(img)[0][1])
-    new_edge_chips = reshape(new_edge_chips, get_sizes(img)[0][0], get_sizes(img)[0][1])
+    new_mask_chips = reshape(new_mask_chips, dimensions[0], dimensions[1])
+    new_edge_chips = reshape(new_edge_chips, dimensions[0], dimensions[1])
 
     new_mask_chips = np.squeeze(new_mask_chips)
     new_edge_chips = np.squeeze(new_edge_chips)
