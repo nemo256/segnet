@@ -61,7 +61,7 @@ def train(model_name='mse'):
     # initializing the segnet model
     model = segnet()
 
-    # model.load_weights(f'models/{model_name}.h5')
+    model.load_weights(f'models/{model_name}.h5')
 
     # fitting the model
     history = model.fit(
@@ -308,11 +308,11 @@ def component_labeling(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('mse')
+    train('mse')
     # evaluate(model_name='mse')
-    predict(model_name='mse', img='Im037_0.jpg')
-    threshold(img='mask.png')
-    threshold(img='edge.png')
-    threshold(img='edge-mask.png')
-    hough_transform(img='edge.png')
-    component_labeling(img='edge-mask.png')
+    # predict(model_name='mse', img='Im037_0.jpg')
+    # threshold(img='mask.png')
+    # threshold(img='edge.png')
+    # threshold(img='edge-mask.png')
+    # hough_transform(img='edge.png')
+    # component_labeling(img='edge-mask.png')
