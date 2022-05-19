@@ -308,11 +308,11 @@ def component_labeling(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    train('mse')
+    # train('mse')
     # evaluate(model_name='mse')
-    # predict(model_name='mse', img='Im037_0.jpg')
-    # threshold(img='mask.png')
-    # threshold(img='edge.png')
-    # threshold(img='edge-mask.png')
-    # hough_transform(img='edge.png')
-    # component_labeling(img='edge-mask.png')
+    predict(model_name='mse', img='Im037_0.jpg')
+    threshold(img='mask.png')
+    threshold(img='edge.png')
+    threshold(img='edge-mask.png')
+    hough_transform(img='edge.png')
+    component_labeling(img='edge-mask.png')
