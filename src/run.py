@@ -330,7 +330,7 @@ def component_labeling(img='edge.png'):
 
 
 # get a minimal of each cell to help with the counting
-def distance_transform(img='edge.png'):
+def distance_transform(img='threshold_edge_mask.png'):
     if not os.path.exists(f'output/{img}'):
         print('Image does not exist!')
         return
@@ -344,15 +344,6 @@ def distance_transform(img='edge.png'):
 
     img = ndimage.distance_transform_edt(img)
     # img = ndimage.binary_dilation(img)
-
-    # # transform rgb channels
-    # b = cv2.distanceTransform(img, distanceType=cv2.DIST_L2, maskSize=0)
-    # g = cv2.distanceTransform(img, distanceType=cv2.DIST_L1, maskSize=0)
-    # r = cv2.distanceTransform(img, distanceType=cv2.DIST_C, maskSize=0)
-    
-    # # merge the transformed channels back to an image
-    # img = cv2.merge((b, g, r))
-    # img = normalize(img)
 
     # saving image after Component Labeling
     plt.imsave('output/distance_transform.png', img, cmap='gray')
