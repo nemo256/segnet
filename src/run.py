@@ -355,7 +355,7 @@ def distance_transform(img='edge.png'):
     # img = normalize(img)
 
     # saving image after Component Labeling
-    plt.imsave('output/distance_transform.png', img)
+    plt.imsave('output/distance_transform.png', img, cmap='gray')
 
 
 # main program
