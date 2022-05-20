@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
+from scipy import ndimage
 
 # custom imports
 import data
@@ -239,16 +240,24 @@ def threshold(img='edge.png'):
         print('Image does not exist!')
         return
 
-    # getting the input image
-    image = cv2.imread(f'output/{img}')
+    # substract if img is edge_mask
+    if img == 'edge_mask.png':
+        mask = cv2.imread(f'output/threshold_mask.png')
+        edge = cv2.imread(f'output/threshold_edge.png')
 
-    # convert to grayscale and apply otsu's thresholding
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    otsu_threshold, image = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU,)
+        # substract mask - edge
+        image = mask - edge
+    else:
+        # getting the input image
+        image = cv2.imread(f'output/{img}')
+
+        # convert to grayscale and apply otsu's thresholding
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        otsu_threshold, image = cv2.threshold(image, 0, 255, cv2.THRESH_OTSU,)
 
     # save the resulting thresholded image
     plt.imsave(f'output/threshold_{img}', image, cmap='gray')
-
+    
 
 # count how many cells from the predicted edges
 def hough_transform(img='edge.png'):
@@ -333,14 +342,17 @@ def distance_transform(img='edge.png'):
     # convert to grayscale
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # transorm rgb channels
-    b = cv2.distanceTransform(img, distanceType=cv2.DIST_L2, maskSize=0)
-    g = cv2.distanceTransform(img, distanceType=cv2.DIST_L1, maskSize=0)
-    r = cv2.distanceTransform(img, distanceType=cv2.DIST_C, maskSize=0)
+    img = ndimage.distance_transform_edt(img)
+    # img = ndimage.binary_dilation(img)
+
+    # # transform rgb channels
+    # b = cv2.distanceTransform(img, distanceType=cv2.DIST_L2, maskSize=0)
+    # g = cv2.distanceTransform(img, distanceType=cv2.DIST_L1, maskSize=0)
+    # r = cv2.distanceTransform(img, distanceType=cv2.DIST_C, maskSize=0)
     
-    # merge the transformed channels back to an image
-    img = cv2.merge((b, g, r))
-    img = normalize(img)
+    # # merge the transformed channels back to an image
+    # img = cv2.merge((b, g, r))
+    # img = normalize(img)
 
     # saving image after Component Labeling
     plt.imsave('output/distance_transform.png', img)
@@ -350,10 +362,10 @@ def distance_transform(img='edge.png'):
 if __name__ == '__main__':
     # train('mse_unsupervised')
     # evaluate(model_name='mse')
-    predict(model_name='mse')
-    threshold(img='mask.png')
-    threshold(img='edge.png')
-    threshold(img='edge_mask.png')
-    distance_transform(img='threshold_edge_mask.png')
-    hough_transform(img='edge.png')
-    component_labeling(img='edge_mask.png')
+    # predict(model_name='mse')
+    threshold('mask.png')
+    threshold('edge.png')
+    threshold('edge_mask.png')
+    distance_transform('threshold_edge_mask.png')
+    hough_transform('edge.png')
+    component_labeling('distance_transform.png')
