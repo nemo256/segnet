@@ -61,13 +61,13 @@ def train(model_name='mse'):
     # initializing the segnet model
     model = segnet()
 
-    # model.load_weights(f'models/{model_name}.h5')
+    model.load_weights(f'models/{model_name}.h5')
 
     # fitting the model
     history = model.fit(
         train_dataset.batch(8),
         validation_data=test_dataset.batch(8),
-        epochs=100,
+        epochs=297,
         steps_per_epoch=125,
         max_queue_size=16,
         use_multiprocessing=False,
