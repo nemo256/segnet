@@ -340,9 +340,9 @@ def distance_transform(img='edge.png'):
 
 # main program
 if __name__ == '__main__':
-    train('mse_unsupervised')
+    # train('mse_unsupervised')
     # evaluate(model_name='mse')
-    # predict(model_name='mse')
+    predict(model_name='mse_unsupervised')
     # threshold(img='mask.png')
     # threshold(img='edge.png')
     # threshold(img='edge_mask.png')
