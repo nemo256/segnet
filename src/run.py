@@ -61,7 +61,7 @@ def train(model_name='mse'):
     # initializing the segnet model
     model = segnet()
 
-    model.load_weights(f'models/{model_name}.h5')
+    # model.load_weights(f'models/{model_name}.h5')
 
     # fitting the model
     history = model.fit(
