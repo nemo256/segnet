@@ -167,9 +167,9 @@ def predict(img='Im037_0.jpg',
     new_edge = concat(new_edge_chips)
 
     # save predicted mask and edge
-    plt.imsave('output/mask.png', new_mask, cmap='gray')
-    plt.imsave('output/edge.png', new_edge, cmap='gray')
-    plt.imsave('output/edge_mask.png', new_mask - new_edge, cmap='gray')
+    plt.imsave('output/mask.png', new_mask)
+    plt.imsave('output/edge.png', new_edge)
+    plt.imsave('output/edge_mask.png', new_mask - new_edge)
 
     # denoise all the output images
     new_mask = denoise('output/mask.png')
@@ -177,9 +177,9 @@ def predict(img='Im037_0.jpg',
     edge_mask = denoise('output/edge_mask.png')
 
     # save predicted mask and edge after denoising
-    plt.imsave('output/mask.png', new_mask, cmap='gray')
-    plt.imsave('output/edge.png', new_edge, cmap='gray')
-    plt.imsave('output/edge_mask.png', edge_mask, cmap='gray')
+    plt.imsave('output/mask.png', new_mask)
+    plt.imsave('output/edge.png', new_edge)
+    plt.imsave('output/edge_mask.png', edge_mask)
 
     # organize results into one figure
     fig = plt.figure(figsize=(25, 12), dpi=80)
@@ -281,8 +281,8 @@ def hough_transform(img='edge.png'):
         for (x, y, r) in circles:
             # draw the circle in the output image, then draw a rectangle
             # corresponding to the center of the circle
-            cv2.circle(output, (x, y), r, (0, 255, 0), 4)
-            cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+            cv2.circle(output, (x, y), r, (0, 0, 255), 8)
+            cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 0, 255), -1)
         # save the output image
         plt.imsave('output/hough_transform.png',
                    np.hstack([img, output]))
@@ -353,7 +353,7 @@ def distance_transform(img='threshold_edge_mask.png'):
 if __name__ == '__main__':
     # train('mse_unsupervised')
     # evaluate(model_name='mse')
-    # predict(model_name='mse')
+    predict(model_name='mse')
     threshold('mask.png')
     threshold('edge.png')
     threshold('edge_mask.png')
