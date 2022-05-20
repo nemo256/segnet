@@ -26,6 +26,7 @@ def generate_train_dataset(img_files):
                                     input_size=input_shape[0],
                                     output_size=output_shape[0])
 
+    # load test dataset to tensorflow for training
     return tf.data.Dataset.from_generator(
         train_gen,
         (tf.float64, ((tf.float64), (tf.float64))),
@@ -45,6 +46,7 @@ def generate_test_dataset(img_files):
         output_size=output_shape[0]
     )
 
+    # load test dataset to tensorflow for training
     return tf.data.Dataset.from_tensor_slices(
         (img_chips, (mask_chips, edge_chips))
     )
@@ -80,6 +82,7 @@ def train(model_name='mse'):
     np.save(f'models/{model_name}_history.npy', history.history)
 
 
+# normalize an image
 def normalize(img):
     return np.array((img - np.min(img)) / (np.max(img) - np.min(img)))
 
@@ -151,6 +154,7 @@ def predict(img='Im037_0.jpg',
     new_mask_chips = reshape(new_mask_chips, dimensions[0], dimensions[1])
     new_edge_chips = reshape(new_edge_chips, dimensions[0], dimensions[1])
 
+    # get rid of [1] dimension
     new_mask_chips = np.squeeze(new_mask_chips)
     new_edge_chips = np.squeeze(new_edge_chips)
 
@@ -232,6 +236,7 @@ def threshold(img='edge.png'):
         print('Image does not exist!')
         return
 
+    # getting the input image
     image = cv2.imread(f'output/{img}')
 
     # convert to grayscale and apply otsu's thresholding
@@ -248,7 +253,7 @@ def hough_transform(img='edge.png'):
         print('Image does not exist!')
         return
 
-    # getting the input image in grayscale mode
+    # getting the input image
     image = cv2.imread(f'output/{img}')
     # convert to grayscale
     img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
