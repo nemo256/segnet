@@ -52,6 +52,7 @@ def generate_test_dataset(img_files):
     )
 
 
+# train the segnet model using already trained weights if available
 def train(model_name='mse'):
     train_img_files = glob.glob('data/train/*.jpg')
     test_img_files = glob.glob('data/test/*.jpg')
@@ -63,7 +64,9 @@ def train(model_name='mse'):
     # initializing the segnet model
     model = segnet()
 
-    model.load_weights(f'models/{model_name}.h5')
+    # Check for existing weights
+    if os.path.exists(f'models/{model_name}.h5'):
+        model.load_weights(f'models/{model_name}.h5')
 
     # fitting the model
     history = model.fit(
