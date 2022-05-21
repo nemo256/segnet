@@ -351,7 +351,7 @@ def distance_transform(img='threshold_edge_mask.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('mse_unsupervised')
+    # train('test')
     # evaluate(model_name='mse')
     # predict(model_name='mse', img='Im037_0.jpg')
     threshold('mask.png')
