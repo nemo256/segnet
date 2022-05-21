@@ -172,8 +172,8 @@ def predict(img='Im037_0.jpg',
     plt.imsave('output/edge_mask.png', new_mask - new_edge)
 
     # denoise all the output images
-    new_mask = denoise('output/mask.png')
-    new_edge = denoise('output/edge.png')
+    new_mask  = denoise('output/mask.png')
+    new_edge  = denoise('output/edge.png')
     edge_mask = denoise('output/edge_mask.png')
 
     # save predicted mask and edge after denoising
@@ -184,19 +184,19 @@ def predict(img='Im037_0.jpg',
     # organize results into one figure
     fig = plt.figure(figsize=(25, 12), dpi=80)
     fig.subplots_adjust(hspace=0.1, wspace=0.1)
-    ax = fig.add_subplot(2, 3, 1)
+    ax  = fig.add_subplot(2, 3, 1)
     ax.set_title('Test image')
     ax.imshow(np.array(img)[0,:,:,:])
-    ax = fig.add_subplot(2, 3, 2)
+    ax  = fig.add_subplot(2, 3, 2)
     ax.set_title('Test mask')
     ax.imshow(np.array(mask)[0,:,:])
-    ax = fig.add_subplot(2, 3, 3)
+    ax  = fig.add_subplot(2, 3, 3)
     ax.set_title('Test edge')
     ax.imshow(np.array(edge)[0,:,:])
-    ax = fig.add_subplot(2, 3, 5)
+    ax  = fig.add_subplot(2, 3, 5)
     ax.set_title('Predicted mask')
     ax.imshow(new_mask)
-    ax = fig.add_subplot(2, 3, 6)
+    ax  = fig.add_subplot(2, 3, 6)
     ax.set_title('Predicted edge')
     ax.imshow(new_edge)
 
