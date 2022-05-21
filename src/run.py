@@ -343,7 +343,7 @@ def distance_transform(img='threshold_edge_mask.png'):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     img = ndimage.distance_transform_edt(img)
-    # img = ndimage.binary_dilation(img)
+    img = ndimage.binary_dilation(img)
 
     # saving image after Component Labeling
     plt.imsave('output/distance_transform.png', img, cmap='gray')
@@ -353,7 +353,7 @@ def distance_transform(img='threshold_edge_mask.png'):
 if __name__ == '__main__':
     # train('mse_unsupervised')
     # evaluate(model_name='mse')
-    predict(model_name='mse', img='Im037_0.jpg')
+    # predict(model_name='mse', img='Im037_0.jpg')
     threshold('mask.png')
     threshold('edge.png')
     threshold('edge_mask.png')
