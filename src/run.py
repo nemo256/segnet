@@ -158,7 +158,7 @@ def predict(img='Im037_0.jpg',
     new_mask_chips = reshape(new_mask_chips, dimensions[0], dimensions[1])
     new_edge_chips = reshape(new_edge_chips, dimensions[0], dimensions[1])
 
-    # get rid of [1] dimension
+    # get rid of none necessary dimension
     new_mask_chips = np.squeeze(new_mask_chips)
     new_edge_chips = np.squeeze(new_edge_chips)
 
@@ -281,7 +281,7 @@ def hough_transform(img='edge.png'):
         for (x, y, r) in circles:
             # draw the circle in the output image, then draw a rectangle
             # corresponding to the center of the circle
-            cv2.circle(output, (x, y), r, (0, 0, 255), 8)
+            cv2.circle(output, (x, y), r, (0, 0, 255), 2)
             cv2.rectangle(output, (x - 5, y - 5), (x + 5, y + 5), (0, 0, 255), -1)
         # save the output image
         plt.imsave('output/hough_transform.png',
@@ -353,7 +353,7 @@ def distance_transform(img='threshold_edge_mask.png'):
 if __name__ == '__main__':
     # train('mse_unsupervised')
     # evaluate(model_name='mse')
-    predict(model_name='mse')
+    predict(model_name='mse', img='Im037_0.jpg')
     threshold('mask.png')
     threshold('edge.png')
     threshold('edge_mask.png')
