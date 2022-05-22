@@ -1,7 +1,7 @@
 # SegNet
 Implementation of SegNet AI model for future studies
 
-![sample](sample.png)
+![Sample](sample.png)
 
 ## Setting up
 
