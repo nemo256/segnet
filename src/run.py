@@ -65,6 +65,10 @@ def train(model_name='mse', epochs=100):
     # initializing the segnet model
     model = segnet()
 
+    # create models directory if it does not exist
+    if os.path.exists('models/'):
+        os.makedirs('models/')
+
     # Check for existing weights
     if os.path.exists(f'models/{model_name}.h5'):
         model.load_weights(f'models/{model_name}.h5')
