@@ -176,10 +176,14 @@ def predict(img='Im037_0.jpg',
     new_edge  = denoise('output/edge.png')
     edge_mask = denoise('output/edge_mask.png')
 
+    # coordinates for croping the images + 5 to get rid of borders
+    x = [padding[1] + 5, dimensions[0] - padding[1] - 55]
+    y = [padding[1] + 5, dimensions[1] - padding[1]]
+
     # save predicted mask and edge after denoising
-    plt.imsave('output/mask.png', new_mask)
-    plt.imsave('output/edge.png', new_edge)
-    plt.imsave('output/edge_mask.png', edge_mask)
+    plt.imsave('output/mask.png', new_mask[x[0]:x[1], y[0]:y[1]])
+    plt.imsave('output/edge.png', new_edge[x[0]:x[1], y[0]:y[1]])
+    plt.imsave('output/edge_mask.png', edge_mask[x[0]:x[1], y[0]:y[1]])
 
     # organize results into one figure
     fig = plt.figure(figsize=(25, 12), dpi=80)
@@ -353,7 +357,7 @@ def distance_transform(img='threshold_edge_mask.png'):
 if __name__ == '__main__':
     # train('test')
     # evaluate(model_name='mse')
-    # predict(model_name='mse', img='Im037_0.jpg')
+    predict(model_name='mse', img='Im037_0.jpg')
     threshold('mask.png')
     threshold('edge.png')
     threshold('edge_mask.png')
