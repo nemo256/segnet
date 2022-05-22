@@ -54,7 +54,7 @@ def generate_test_dataset(img_files):
 
 
 # train the segnet model using already trained weights if available
-def train(model_name='mse'):
+def train(model_name='mse', epochs=100):
     train_img_files = glob.glob('data/train/*.jpg')
     test_img_files = glob.glob('data/test/*.jpg')
 
@@ -73,7 +73,7 @@ def train(model_name='mse'):
     history = model.fit(
         train_dataset.batch(8),
         validation_data=test_dataset.batch(8),
-        epochs=297,
+        epochs=epochs,
         steps_per_epoch=125,
         max_queue_size=16,
         use_multiprocessing=False,
@@ -355,12 +355,12 @@ def distance_transform(img='threshold_edge_mask.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('test')
+    train('quadtree_test')
     # evaluate(model_name='mse')
-    predict(model_name='mse', img='Im037_0.jpg')
-    threshold('mask.png')
-    threshold('edge.png')
-    threshold('edge_mask.png')
-    distance_transform('threshold_edge_mask.png')
-    hough_transform('edge.png')
-    component_labeling('distance_transform.png')
+    # predict(model_name='mse', img='Im037_0.jpg')
+    # threshold('mask.png')
+    # threshold('edge.png')
+    # threshold('edge_mask.png')
+    # distance_transform('threshold_edge_mask.png')
+    # hough_transform('edge.png')
+    # component_labeling('distance_transform.png')
