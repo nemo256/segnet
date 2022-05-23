@@ -66,12 +66,14 @@ def train(model_name='mse', epochs=100):
     model = segnet()
 
     # create models directory if it does not exist
-    if os.path.exists('models/'):
+    if not os.path.exists('models/'):
         os.makedirs('models/')
 
     # Check for existing weights
     if os.path.exists(f'models/{model_name}.h5'):
         model.load_weights(f'models/{model_name}.h5')
+
+    model.summary()
 
     # fitting the model
     history = model.fit(
@@ -133,11 +135,8 @@ def predict(img='Im037_0.jpg',
     model = segnet()
 
     # Check for existing weights
-    if not os.path.exists(f'models/{model_name}.h5'):
-        train(model_name)
-
-    # load best weights
-    model.load_weights(f'models/{model_name}.h5')
+    if os.path.exists(f'models/{model_name}.h5'):
+        model.load_weights(f'models/{model_name}.h5')
 
     # load test data
     img, mask, edge = data.load_data(image, padding=200)
@@ -154,6 +153,12 @@ def predict(img='Im037_0.jpg',
     output = model.predict(img_chips)
     new_mask_chips = np.array(output[0])
     new_edge_chips = np.array(output[1])
+
+    for chip in new_mask_chips:
+        chip = cv2.morphologyEx(chip, cv2.MORPH_OPEN,cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)))
+
+    for chip in new_edge_chips:
+        chip = cv2.morphologyEx(chip, cv2.MORPH_OPEN,cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3)))
 
     # get image dimensions
     dimensions = [get_sizes(img)[0][0], get_sizes(img)[0][1]]
@@ -359,12 +364,12 @@ def distance_transform(img='threshold_edge_mask.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('quadtree_test')
+    train('quadtree_test')
     # evaluate(model_name='quadtree_test')
-    predict(model_name='quadtree_test', img='dz-1.jpg')
-    threshold('mask.png')
-    threshold('edge.png')
-    threshold('edge_mask.png')
-    distance_transform('threshold_edge_mask.png')
-    hough_transform('edge.png')
-    component_labeling('distance_transform.png')
+    # predict(model_name='quadtree_test')
+    # threshold('mask.png')
+    # threshold('edge.png')
+    # threshold('edge_mask.png')
+    # distance_transform('threshold_edge_mask.png')
+    # hough_transform('edge.png')
+    # component_labeling('distance_transform.png')
