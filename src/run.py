@@ -73,8 +73,6 @@ def train(model_name='mse', epochs=100):
     if os.path.exists(f'models/{model_name}.h5'):
         model.load_weights(f'models/{model_name}.h5')
 
-    model.summary()
-
     # fitting the model
     history = model.fit(
         train_dataset.batch(8),
