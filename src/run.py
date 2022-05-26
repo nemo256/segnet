@@ -186,10 +186,10 @@ def predict(img='Im037_0.jpg',
     plt.imsave('output/edge.png', new_edge[x[0]:x[1], y[0]:y[1]])
     plt.imsave('output/edge_mask.png', edge_mask[x[0]:x[1], y[0]:y[1]])
 
-    # # save predicted mask and edge after denoising
-    # plt.imsave('output/mask.png', new_mask)
-    # plt.imsave('output/edge.png', new_edge)
-    # plt.imsave('output/edge_mask.png', edge_mask)
+    # save predicted mask and edge after denoising
+    plt.imsave('output/mask.png', new_mask)
+    plt.imsave('output/edge.png', new_edge)
+    plt.imsave('output/edge_mask.png', edge_mask)
 
     # organize results into one figure
     fig = plt.figure(figsize=(25, 12), dpi=80)
@@ -361,12 +361,12 @@ def distance_transform(img='threshold_edge_mask.png'):
 
 # main program
 if __name__ == '__main__':
-    train('quadtree_test')
+    # train('quadtree_test')
     # evaluate(model_name='quadtree_test')
-    # predict(model_name='mse')
-    # threshold('mask.png')
-    # threshold('edge.png')
-    # threshold('edge_mask.png')
-    # distance_transform('threshold_edge_mask.png')
-    # hough_transform('edge.png')
-    # component_labeling('distance_transform.png')
+    predict(model_name='mse')
+    threshold('mask.png')
+    threshold('edge.png')
+    threshold('edge_mask.png')
+    distance_transform('threshold_edge_mask.png')
+    hough_transform('edge.png')
+    component_labeling('distance_transform.png')
