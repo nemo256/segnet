@@ -73,37 +73,37 @@ def train(model_name='mse', epochs=100):
         train_img_list,
         train_mask_list,
     )
-    # test_dataset = generate_test_dataset(
-    #     test_img_list,
-    #     test_mask_list,
-    # )
+    test_dataset = generate_test_dataset(
+        test_img_list,
+        test_mask_list,
+    )
 
-    # # initializing the segnet model
-    # model = segnet()
+    # initializing the segnet model
+    model = segnet()
 
-    # # create models directory if it does not exist
-    # if not os.path.exists('models/'):
-    #     os.makedirs('models/')
+    # create models directory if it does not exist
+    if not os.path.exists('models/'):
+        os.makedirs('models/')
 
-    # # Check for existing weights
-    # if os.path.exists(f'models/{model_name}.h5'):
-    #     model.load_weights(f'models/{model_name}.h5')
+    # Check for existing weights
+    if os.path.exists(f'models/{model_name}.h5'):
+        model.load_weights(f'models/{model_name}.h5')
 
-    # # fitting the model
-    # history = model.fit(
-    #     train_dataset.batch(8),
-    #     validation_data=test_dataset.batch(8),
-    #     epochs=epochs,
-    #     steps_per_epoch=125,
-    #     max_queue_size=16,
-    #     use_multiprocessing=False,
-    #     workers=8,
-    #     verbose=1,
-    #     callbacks=get_callbacks(model_name)
-    # )
+    # fitting the model
+    history = model.fit(
+        train_dataset.batch(8),
+        validation_data=test_dataset.batch(8),
+        epochs=epochs,
+        steps_per_epoch=125,
+        max_queue_size=16,
+        use_multiprocessing=False,
+        workers=8,
+        verbose=1,
+        callbacks=get_callbacks(model_name)
+    )
 
-    # # save the history
-    # np.save(f'models/{model_name}_history.npy', history.history)
+    # save the history
+    np.save(f'models/{model_name}_history.npy', history.history)
 
 
 # normalize an image
