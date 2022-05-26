@@ -185,6 +185,6 @@ def test_chips(imgs, mask,
                 mask_chips += [temp_mask > 0]
 
     img_chips = np.array(img_chips)
-    mask_chips = np.array(mask_chips)
+    mask_chips = np.array(mask_chips, dtype=object)
 
     return img_chips, mask_chips
