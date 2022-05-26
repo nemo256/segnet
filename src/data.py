@@ -168,20 +168,13 @@ def test_chips(imgs, mask,
                 chip_y_l = int(y - (input_size / 2))
                 chip_y_r = int(y + (input_size / 2))
 
-                mask_x_l = int(x - (output_size / 2))
-                mask_x_r = int(x + (output_size / 2))
-                mask_y_l = int(y - (output_size / 2))
-                mask_y_r = int(y + (output_size / 2))
-
                 temp_chip = imgs[i][chip_x_l:chip_x_r, chip_y_l:chip_y_r]
-                temp_mask = mask[i][mask_x_l:mask_x_r, mask_y_l:mask_y_r]
+                temp_mask = imgs[i][chip_x_l:chip_x_r, chip_y_l:chip_y_r]
 
                 temp_chip = temp_chip.astype(np.float32) * 2
                 temp_mask = temp_mask.astype(np.float32) * 2
                 temp_chip /= 255
-                temp_mask /= 255
                 temp_chip -= 1
-                temp_mask -= 1
 
                 img_chips += [temp_chip]
                 mask_chips += [temp_mask]
