@@ -361,12 +361,12 @@ def distance_transform(img='threshold_edge_mask.png'):
 
 # main program
 if __name__ == '__main__':
-    # train('quadtree_test')
+    train('wbc')
     # evaluate(model_name='quadtree_test')
-    predict(model_name='mse')
-    threshold('mask.png')
-    threshold('edge.png')
-    threshold('edge_mask.png')
-    distance_transform('threshold_edge_mask.png')
-    hough_transform('edge.png')
-    component_labeling('distance_transform.png')
+    # predict(model_name='mse')
+    # threshold('mask.png')
+    # threshold('edge.png')
+    # threshold('edge_mask.png')
+    # distance_transform('threshold_edge_mask.png')
+    # hough_transform('edge.png')
+    # component_labeling('distance_transform.png')
