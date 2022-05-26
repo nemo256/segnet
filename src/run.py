@@ -12,17 +12,17 @@ from model import segnet, get_callbacks
 
 
 # global variables
+cell_type       = 'red'              # red, white of platelets
 input_shape     = (128, 128, 3)
 output_shape    = (128, 128, 1)
 padding         = [200, 100]
 
 
-def generate_train_dataset(img_files):
-    img, mask, edge = data.load_data(img_files)
+def generate_train_dataset(img_list, mask_list):
+    img, mask = data.load_data(img_list, mask_list)
 
     def train_gen():
         return data.train_generator(img, mask,
-                                    edge=edge,
                                     padding=padding[0],
                                     input_size=input_shape[0],
                                     output_size=output_shape[0])
@@ -35,13 +35,12 @@ def generate_train_dataset(img_files):
     )
 
 
-def generate_test_dataset(img_files):
-    img, mask, edge = data.load_data(img_files)
+def generate_test_dataset(img_list, mask_list):
+    img, mask = data.load_data(img_list, mask_list)
 
-    img_chips, mask_chips, edge_chips = data.test_chips(
+    img_chips, mask_chips = data.test_chips(
         img,
         mask,
-        edge=edge,
         padding=padding[1],
         input_size=input_shape[0],
         output_size=output_shape[0]
@@ -49,45 +48,62 @@ def generate_test_dataset(img_files):
 
     # load test dataset to tensorflow for training
     return tf.data.Dataset.from_tensor_slices(
-        (img_chips, (mask_chips, edge_chips))
+        (img_chips, mask_chips)
     )
 
 
 # train the segnet model using already trained weights if available
 def train(model_name='mse', epochs=100):
-    train_img_files = glob.glob('data/train/*.jpg')
-    test_img_files = glob.glob('data/test/*.jpg')
+    train_img_list = glob.glob('data/train/images/*.jpg')
+    test_img_list = glob.glob('data/test/images/*.jpg')
+
+    # getting appropriate masks
+    if cell_type == 'red':
+        train_mask_list = glob.glob('data/train/masks/rbc/*.jpg')
+        test_mask_list = glob.glob('data/test/masks/rbc/*.jpg')
+    elif cell_type == 'white':
+        train_mask_list = glob.glob('data/train/masks/wbc/*.jpg')
+        test_mask_list = glob.glob('data/test/masks/wbc/*.jpg')
+    else:
+        train_mask_list = None
+        test_mask_list = None
 
     # loading train dataset and test datasets
-    train_dataset = generate_train_dataset(train_img_files)
-    test_dataset = generate_test_dataset(test_img_files)
-
-    # initializing the segnet model
-    model = segnet()
-
-    # create models directory if it does not exist
-    if not os.path.exists('models/'):
-        os.makedirs('models/')
-
-    # Check for existing weights
-    if os.path.exists(f'models/{model_name}.h5'):
-        model.load_weights(f'models/{model_name}.h5')
-
-    # fitting the model
-    history = model.fit(
-        train_dataset.batch(8),
-        validation_data=test_dataset.batch(8),
-        epochs=epochs,
-        steps_per_epoch=125,
-        max_queue_size=16,
-        use_multiprocessing=False,
-        workers=8,
-        verbose=1,
-        callbacks=get_callbacks(model_name)
+    train_dataset = generate_train_dataset(
+        train_img_list,
+        train_mask_list,
     )
+    # test_dataset = generate_test_dataset(
+    #     test_img_list,
+    #     test_mask_list,
+    # )
 
-    # save the history
-    np.save(f'models/{model_name}_history.npy', history.history)
+    # # initializing the segnet model
+    # model = segnet()
+
+    # # create models directory if it does not exist
+    # if not os.path.exists('models/'):
+    #     os.makedirs('models/')
+
+    # # Check for existing weights
+    # if os.path.exists(f'models/{model_name}.h5'):
+    #     model.load_weights(f'models/{model_name}.h5')
+
+    # # fitting the model
+    # history = model.fit(
+    #     train_dataset.batch(8),
+    #     validation_data=test_dataset.batch(8),
+    #     epochs=epochs,
+    #     steps_per_epoch=125,
+    #     max_queue_size=16,
+    #     use_multiprocessing=False,
+    #     workers=8,
+    #     verbose=1,
+    #     callbacks=get_callbacks(model_name)
+    # )
+
+    # # save the history
+    # np.save(f'models/{model_name}_history.npy', history.history)
 
 
 # normalize an image
@@ -127,7 +143,7 @@ def denoise(img):
 # predict (segment) image and save a sample output
 def predict(img='Im037_0.jpg',
             model_name='mse'):
-    image = glob.glob(f'data/test/{img}')
+    image = glob.glob(f'data/train/*.jpg')
 
     # initialize segnet
     model = segnet()
@@ -137,11 +153,11 @@ def predict(img='Im037_0.jpg',
         model.load_weights(f'models/{model_name}.h5')
 
     # load test data
-    img, mask, edge = data.load_data(image, padding=200)
-    img_chips, mask_chips, edge_chips = data.test_chips(
+    img, mask = data.load_data(image, padding=0)
+
+    img_chips, mask_chips = data.test_chips(
         img,
         mask,
-        edge=edge,
         padding=padding[1],
         input_size=input_shape[0],
         output_size=output_shape[0]
