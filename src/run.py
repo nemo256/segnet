@@ -47,9 +47,9 @@ def generate_test_dataset(img_list, mask_list):
     )
 
     # load test dataset to tensorflow for training
-    return tf.data.Dataset.from_tensor_slices(
-        [[img_chips, mask_chips]]
-    )
+    # return tf.data.Dataset.from_tensor_slices(
+    #     [[img_chips, mask_chips]]
+    # )
 
 
 # train the segnet model using already trained weights if available
