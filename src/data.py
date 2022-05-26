@@ -179,12 +179,14 @@ def test_chips(imgs, mask,
                 temp_chip = temp_chip.astype(np.float32) * 2
                 temp_mask = temp_mask.astype(np.float32) * 2
                 temp_chip /= 255
+                temp_mask /= 255
                 temp_chip -= 1
+                temp_mask -= 1
 
                 img_chips += [temp_chip]
-                mask_chips += [temp_mask > 0]
+                mask_chips += [temp_mask]
 
     img_chips = np.array(img_chips)
-    mask_chips = np.array(mask_chips, dtype=object)
+    mask_chips = np.array(mask_chips)
 
     return img_chips, mask_chips
