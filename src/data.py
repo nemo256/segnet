@@ -183,7 +183,7 @@ def test_chips(imgs, mask,
                 img_chips += [temp_chip]
                 mask_chips += [(temp_mask > 0).astype(float)[..., np.newaxis]]
 
-    img_chips = np.array(img_chips)
-    mask_chips = np.array(mask_chips)
+    img_chips = np.array(img_chips).astype(float)
+    mask_chips = np.array(mask_chips).astype(float)
 
     return img_chips, mask_chips
